@@ -16,6 +16,7 @@ class Products extends JsonResource
             "quantity"=>$this->quantity,
             "price"=>$this->price,
         ];
+        
 
 
 

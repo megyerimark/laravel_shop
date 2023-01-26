@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->string("itemNumber");
-            $table->integer("quantity"); //mennyiség
+            $table->integer("quantity")->nullable(); //mennyiség
             $table->double("price");
             $table->timestamps();
             
