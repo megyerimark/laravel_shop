@@ -24,6 +24,7 @@ class ProductController extends BaseController
         $validator = Validator::make($product, [
             "name" => "required",
             "price" => "required",
+            "quantity"=>"required",
             "itemNumber" => "required",
         ], [
             "name.required" => "Név kitöltése kötelező",
