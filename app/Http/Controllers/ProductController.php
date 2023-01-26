@@ -76,18 +76,19 @@ class ProductController extends BaseController
         }
 
         $product =  Product::find($id);
-        $product->name = $input[ "name"];
-        $product->itemNumber = $input["itemNumber"];
-        $product->price = $input["price"];
-        $product->update();
+        // $product->name = $input[ "name"];
+        // $product->itemNumber = $input["itemNumber"];
+        // $product->price = $input["price"];
+        $product->update($input);
 
         return $this->sendResponse(new Products($product), "Frissítve tetya");
-    
     }
 
 
     public function destroy($id)
     {
-        //
+        $product = Product::find($id);
+        $product->delete();
+        return $this->sendResponse(new Products($product), "Törölve tetya");
     }
 }

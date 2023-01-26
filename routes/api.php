@@ -22,3 +22,4 @@ Route::post("new", [ProductController::class, "create"]);
 Route::get("products", [ProductController::class, "index"]);
 Route::get("product/{id}", [ProductController::class, "show"]);
 Route::put("product/{id}", [ProductController::class, "update"]);
+Route::delete("delete/{id}", [ProductController::class, "destroy"]);
