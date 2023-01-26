@@ -6,23 +6,29 @@ use Illuminate\Http\Request;
 
 class BaseController extends Controller
 {
-    public function sendResponse( $result, $message)
+    public function sendResponse($result, $message)
     {
 
         $responese = [
-            "success"=> true,
-            "data"=>$result,
-            "message"=>$message
+            "success" => true,
+            "data" => $result,
+            "message" => $message
         ];
-        return response()->json($responese , 200);
+        return response()->json($responese, 200);
     }
 
 
-    public function sendError($error,$errorMessages = [], $code= 404)
+    public function sendError($error, $errorMessages = [], $code = 404)
     {
 
+        $response = [
+            "success" => false,
+            "message" => $error
+        ];
+        if (!empty($errorMessages)) {
 
+            $response["data"] = $errorMessages;
+        }
+        return response()->json($response, $code);
     }
 }
-
-
