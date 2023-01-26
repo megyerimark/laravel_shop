@@ -65,7 +65,24 @@ class ProductController extends BaseController
 
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            "name" => "required",
+            "price" => "required",
+            "itemNumber" => "required",
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError($validator, "Hiba");
+        }
+
+        $product =  Product::find($id);
+        $product->name = $input[ "name"];
+        $product->itemNumber = $input["itemNumber"];
+        $product->price = $input["price"];
+        $product->update();
+
+        return $this->sendResponse(new Products($product), "Frissítve tetya");
+    
     }
 
 
