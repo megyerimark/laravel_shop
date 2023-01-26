@@ -2,83 +2,53 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\BaseController as BaseController;
+use Illuminate\Support\Facades\Validator as Validator;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Http\Request;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function signUp(Request $request)
+
     {
-        //
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            "name" => "required",
+            "email" => "required",
+            "password" => "required",
+            "confirm_password" => "required|same:password",
+
+
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError("Hibás adatok", $validator->errors());
+        }
+        $input["password"] = bcrypt($input['password']);
+        $user = User::create($input);
+
+        return $this->sendResponse($user, "Sikeres regisztráció");
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function signIn(Request $request)
     {
-        //
+
+        if (Auth::attempt(["email" => $request->email, "password" => $request->password])) {
+            $authUser = Auth::user();
+            $success["token"] = $authUser->createToken("MyAuthApp")->plainTextToken;
+            $success["name"] = $authUser->name;
+            return $this->sendResponse($success, "Hello". $authUser->name);
+        } else {
+            return $this->sendError("Unathorized" . ["error" => "sikertelen"]);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    public function logout(Request $request){
+        auth("sanctum")->user()->currentAccessToken()->delete();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return response()->json("Sikeres kijelentkezés");
     }
 }
